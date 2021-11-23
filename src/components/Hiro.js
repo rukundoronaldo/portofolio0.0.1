@@ -1,6 +1,6 @@
 import React from 'react'
 import Typical from 'react-typical'
-
+import { Link } from 'react-scroll'
 
 function Hiro() {
     return (
@@ -22,6 +22,7 @@ function Hiro() {
                     />
                 </h1>
                 <div class="w-full flex justify-center md:justify-start">
+                <Link to="MyWork" spy={true} smooth={true} duration=        {500}>
                     <button class="px-8 py-4 bg-theme text-white font-bold mt-12 flex items-center space-x-3">
                         <div>
                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,9 +32,10 @@ function Hiro() {
                         </div>
                         <span>View my work.</span>
                     </button>
+                    </Link>
                 </div>
             </div>
-            <img src="https://d1fmx1rbmqrxrr.cloudfront.net/zdnet/optim/i/edit/ne/2020/09/macmini_m1__w630.jpg" alt="Man" class="w-3/4 mt-12 md:absolute -mt-6 md:mt-0 right-0 -z-1 "/>
+            <img src="	https://www.gearnews.de/wp-content/uploads/2020/11/apple-keynote-11-2020-770x425.jpg" alt="Man" class="w-3/4 mt-12 md:absolute -mt-6 md:mt-0 right-0 -z-1 "/>
         </div>
     </div>
     )

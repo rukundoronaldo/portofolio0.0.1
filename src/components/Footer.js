@@ -1,19 +1,45 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import linkd from './linkedin-icon.svg'
 import emailjs from 'emailjs-com';
-function Footer() {
-      const form = useRef();
+import GoodMessage from './GoodMessage'
+import BadMessage from './BadMessage'
 
-  const sendEmail = (e) => {
+function Footer() {
+    const form = useRef();
+    const [error, setError] = useState();
+    const [showError, setShowError] = useState("before send");
+    const [inputData, setInputData] = useState({user_name: "", user_email: "", user_tel: ""})
+
+    function handleChange(event) {
+        const {name, value} = event.target
+        setInputData(prevInputData => ({...prevInputData, [name]: value}))
+    }
+
+    const sendEmail = (e) => {
     e.preventDefault();
 
+    if (inputData.user_name === ""  || inputData.user_email === "" || inputData.user_tel === "") {
+        setShowError("empty");
+        console.log("empty");
+        return;
+    } 
     emailjs.sendForm('service_f9gz7lh', 'template_doizsq7', form.current, 'user_mlwaktPgUpxahAtLGHf3p')
-      .then((result) => {
-          console.log(result.text);
+    .then((result) => {
+          setShowError('passed');
       }, (error) => {
-          console.log(error.text);
+          setShowError("error");
       });
+      setInputData({...inputData, user_name: "", user_email: "", user_tel: ""})
     };
+
+    const errors = () => {
+        return (
+                showError === "passed" ? <GoodMessage/> : showError === "error" ? <BadMessage/> : showError === "empty" ?  <BadMessage message="your name or email or telphone number is incorrect"/> :""
+        )
+
+    }
+         
+    
     return (
         <footer class="bg-black text-white inset-x-0 bottom-0 p-2 text-xs flex justify-between">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
@@ -56,23 +82,29 @@ function Footer() {
                     <form ref={form} onSubmit={sendEmail} class="p-6 flex flex-col justify-center">
                         <div class="flex flex-col">
                             <label for="name" class="hidden">Full Name</label>
-                            <input type="name" name="user_name" id="name" placeholder="Full Name" class="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
+                            <input onChange={handleChange} value={inputData.user_name}  type="name" name="user_name" id="name" placeholder="Full Name" class="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
                         </div>
 
                         <div class="flex flex-col mt-2">
                             <label for="email" class="hidden">Email</label>
-                            <input type="email" name="user_email" id="email" placeholder="Email" class="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
+                            <input onChange={handleChange} value={inputData.user_email} type="email" name="user_email" id="email" placeholder="Email" class="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
                         </div>
 
                         <div class="flex flex-col mt-2">
                             <label for="tel" class="hidden">Number</label>
-                            <input type="tel" name="user_tel" id="tel" placeholder="Telephone Number" class="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
+                            <input onChange={handleChange} value={inputData.user_tel}  type="tel" name="user_tel" id="tel" placeholder="Telephone Number" class="w-100 mt-2 py-3 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-indigo-500 focus:outline-none"/>
                         </div>
 
-                        <button type="submit" class="md:w-32 bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-lg mt-3 hover:bg-indigo-500 transition ease-in-out duration-300">
+                        <button onclick={() => {
+                            console.log(error)
+                            setShowError(error)
+                            }}  type="submit" class="md:w-32 bg-indigo-600 hover:bg-blue-dark text-white font-bold py-3 px-6 rounded-lg mt-3 hover:bg-indigo-500 transition ease-in-out duration-300">
                             Submit
                         </button>
                     </form>
+                    {
+                        errors()
+                    }
                 </div>
         </div>
     </div>
